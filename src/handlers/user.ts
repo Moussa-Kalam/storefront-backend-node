@@ -33,11 +33,23 @@ const show = async(req: Request, res: Response) => {
     res.json(user)
 }
 
+const authenticate = async(req: Request, res: Response) => {
+    try {
+        const user = await userStore.authenticate(req.body.user_name, req.body.user_password) 
+        const token = jwt.sign({user: user}, process.env.TOKEN_SECRET as string)
+        res.json(token)
+    } catch(err) {
+        res.status(401)
+        res.json(err)
+    }
+}
+
 
 const usersRoutes = (app: express.Application) => {
-    app.get('/users', verifyAuthToken ,index)
+    app.get('/users', verifyAuthToken, index)
     app.get('/users/:id', verifyAuthToken, show)
-    app.post('/users', verifyAuthToken ,create)
+    app.post('/users', verifyAuthToken, create)
+    app.post('/users/authenticate', authenticate )
 }
 
 export default usersRoutes
