@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express'
+import verifyAuthToken from '../middlewares/verifyAuthToken'
 import { Product, ProductStore } from '../models/product'
 
 const store = new ProductStore()
@@ -28,34 +29,11 @@ const show = async(req: Request, res: Response) => {
     res.json(product)
 }
 
-const update = async(req: Request, res:Response) => {
-    try {
-        const productId = Number(req.params.id)
-        const productToUpdate: Product = {
-            id: productId,
-            name: req.body.name,
-            price: req.body.price
-        }
-
-        const updatedProduct = await store.update(productToUpdate)
-        res.json(updatedProduct)
-    } catch(err) {
-        res.status(400)
-        res.json(err)
-    }
-}
-
-const destroy = async(req: Request, res: Response) => {
-    const deletedProduct = await store.delete(Number(req.body.id))
-    res.json(deletedProduct)
-}
 
 const productsRoutes = (app: express.Application) => {
     app.get('/products', index)
     app.get('/products/:id', show)
-    app.post('/products', create)
-    app.put('/products/:id', update)
-    app.delete('/products/:id', destroy)
+    app.post('/products', verifyAuthToken, create)
 }
 
 export default productsRoutes

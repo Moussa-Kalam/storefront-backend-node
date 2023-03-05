@@ -44,26 +44,5 @@ describe('User Model', () => {
         })
     })
 
-    it('update method should update a specific user', async() => {
-        const usersList = await user.index()
-        const userId = Number(usersList[0].id) 
-        const u = {
-            id: userId,
-            user_name: 'Sniper',
-            first_name: 'Moussa',
-            last_name: 'ADAMOU',
-            user_password: 'Mypassword'
-        }
-        const result = await user.update(u)
-        expect(result.user_name).toBe(u.user_name)
-        expect(result.last_name).toBe(u.last_name)
-    })
-
-    it('delete method should remove the specified user', async() => {
-        user.delete(1);
-        const result = await user.index();
-
-        expect(result).toEqual([]);
-    });
 
 });

@@ -57,36 +57,6 @@ export class UserModel {
         }
     }
 
-    async update(u: User): Promise<User> {
-        try {
-            const conn = await Client.connect()
-            const sql = 'UPDATE users SET user_name=$2, first_name=$3, last_name= $4, user_password=$5 WHERE id=$1 RETURNING user_name, first_name, last_name'
-            const result = await conn.query(sql, [
-                u.id,
-                u.user_name,
-                u.first_name,
-                u.last_name,
-                u.user_password
-            ])
-            conn.release()
-            return result.rows[0]
-        } catch (err) {
-            throw new Error(`Could not update user ${u.id}. Error ${err}`)
-        }
-    }
-
-    async delete(id: number): Promise<User> {
-        try {
-            const conn = await Client.connect()
-            const sql = 'DELETE FROM users WHERE id=($1)'
-            const result = await conn.query(sql, [id])
-            conn.release()
-            return result.rows[0]
-        } catch (err) {
-            throw new Error(`Could not delete user ${id}. Error: ${err}`)
-        }
-    }
-
     async authenticate(username: string, password: string): Promise<User | null> {
             const conn = await Client.connect()
             const sql = 'SELECT user_password FROM users WHERE user_name=($1)'

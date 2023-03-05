@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express'
+import verifyAuthToken from '../middlewares/verifyAuthToken'
 import { Order, OrderModel } from '../models/order'
 
 const order = new OrderModel()
@@ -58,7 +59,7 @@ const destroy = async(req: Request, res: Response) => {
 const ordersRoutes = (app: express.Application) => {
     app.get('/orders', index)
     app.get('/orders/:id', show)
-    app.get('orders/:id/current', showCurrent)
+    app.get('orders/:id/current', verifyAuthToken, showCurrent)
     app.post('/orders', create)
     app.put('/orders/:id', update)
     app.delete('/orders/:id', destroy)
