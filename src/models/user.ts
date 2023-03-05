@@ -1,4 +1,8 @@
 import Client from "../database";
+import bcrypt from 'bcrypt'
+
+const saltRounds = process.env.SALT_ROUNDS ? parseInt(process.env.SALT_ROUNDS): 10
+const pepper = process.env.BCRYPT_PASSWORD
 
 export type User = {
     id?: number;
@@ -25,11 +29,14 @@ export class UserModel {
         try {
             const conn = await Client.connect()
             const sql = 'INSERT INTO users (user_name, first_name, last_name, user_password) VALUES ($1, $2, $3, $4) RETURNING *'
+            
+            const hash = bcrypt.hashSync(u.user_password + pepper, saltRounds);
+            
             const result = await conn.query(sql, [
                 u.user_name,
                 u.first_name,
                 u.last_name,
-                u.user_password
+                hash
             ])
             conn.release()
             return result.rows[0]
@@ -79,4 +86,23 @@ export class UserModel {
             throw new Error(`Could not delete user ${id}. Error: ${err}`)
         }
     }
+
+    async authenticate(username: string, password: string): Promise<User | null> {
+            const conn = await Client.connect()
+            const sql = 'SELECT user_password FROM users WHERE user_name=($1)'
+
+            const result = await conn.query(sql, [username])
+            console.log(password+pepper)
+
+            if(result.rows.length) {
+                const user = result.rows[0]
+                console.log(user)
+
+                if(bcrypt.compareSync(password+pepper, user.user_password)) {
+                    return user
+                }
+            }
+
+            return null
+        }
 }
