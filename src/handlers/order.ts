@@ -15,7 +15,7 @@ const showCurrent = async(req: Request, res: Response) => {
 }
 
 const ordersRoutes = (app: express.Application) => {
-    app.get('/orders/:id/current', verifyAuthToken, showCurrent)
+    app.get('/current-order/:id', verifyAuthToken, showCurrent)
 }
 
 export default ordersRoutes
