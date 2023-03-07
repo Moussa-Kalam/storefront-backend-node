@@ -10,7 +10,7 @@ export class OrderModel {
     async showCurrent(userId: number): Promise<Order> {
         try {
             const conn = await Client.connect()
-            const sql = 'SELECT * FROM orders WHERE user_id=$1 AND status="ACTIVE"'
+            const sql = 'SELECT * FROM orders WHERE user_id=$1 AND status=\'ACTIVE\''
             const result = await conn.query(sql, [userId])
             conn.release()
             return result.rows[0]
