@@ -6,7 +6,7 @@ const pepper = process.env.BCRYPT_PASSWORD
 
 export type User = {
     id?: number;
-    user_name: string;
+    username: string;
     first_name: string;
     last_name: string;
     user_password: string
@@ -16,7 +16,7 @@ export class UserModel {
     async index(): Promise<User[]> {
         try {
             const conn = await Client.connect()
-            const sql = 'SELECT id, user_name, first_name, last_name FROM users'
+            const sql = 'SELECT id, username, first_name, last_name FROM users'
             const result = await conn.query(sql)
             conn.release()
             return result.rows
@@ -28,12 +28,12 @@ export class UserModel {
     async create(u: User): Promise<User> {
         try {
             const conn = await Client.connect()
-            const sql = 'INSERT INTO users (user_name, first_name, last_name, user_password) VALUES ($1, $2, $3, $4) RETURNING user_name, first_name, last_name'
+            const sql = 'INSERT INTO users (username, first_name, last_name, user_password) VALUES ($1, $2, $3, $4) RETURNING username, first_name, last_name'
             
             const hash = bcrypt.hashSync(u.user_password + pepper, saltRounds);
             
             const result = await conn.query(sql, [
-                u.user_name,
+                u.username,
                 u.first_name,
                 u.last_name,
                 hash
@@ -48,7 +48,7 @@ export class UserModel {
     async show(id: number): Promise<User> {
         try {
             const conn = await Client.connect()
-            const sql = 'SELECT user_name, first_name, last_name FROM users WHERE id=($1)'
+            const sql = 'SELECT username, first_name, last_name FROM users WHERE id=($1)'
             const result = await conn.query(sql, [id])
             conn.release()
             return result.rows[0]
@@ -59,7 +59,7 @@ export class UserModel {
 
     async authenticate(username: string, password: string): Promise<User | null> {
             const conn = await Client.connect()
-            const sql = 'SELECT user_password FROM users WHERE user_name=($1)'
+            const sql = 'SELECT user_password FROM users WHERE username=($1)'
 
             const result = await conn.query(sql, [username])
             console.log(password+pepper)
