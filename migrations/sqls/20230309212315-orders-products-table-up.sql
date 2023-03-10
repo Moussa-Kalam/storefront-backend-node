@@ -1,4 +1,4 @@
-CREATE TABLE order_products (
+CREATE TABLE orders_products (
     id SERIAL PRIMARY KEY, 
     order_id INTEGER NOT NULL REFERENCES orders(id) ON DELETE CASCADE, 
     product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,

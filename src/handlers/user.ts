@@ -6,14 +6,18 @@ import verifyAuthToken from '../middlewares/verifyAuthToken'
 const userStore = new UserModel()
 
 const index = async(_req: Request, res: Response) => {
-    const users = await userStore.index()
-    res.json(users)
+    try {
+        const users = await userStore.index()
+        res.json(users)
+    } catch(err) {
+        res.status(500).send({ message: 'Error retrieving users' })
+    }
 }
 
 const create = async(req: Request, res: Response) => {
     try {
         const user: User = {
-            user_name: req.body.user_name,
+            username: req.body.username,
             first_name: req.body.first_name,
             last_name: req.body.last_name,
             user_password: req.body.user_password,
@@ -23,24 +27,34 @@ const create = async(req: Request, res: Response) => {
         const token = jwt.sign({user: newUser}, process.env.TOKEN_SECRET as string)
         res.json(token)
     } catch(err) {
-        res.status(400)
-        res.json(err)
+        res.status(400).send({ message: 'Error creating user', error: err})
     }
 }
 
 const show = async(req: Request, res: Response) => {
-    const user = await userStore.show(Number(req.params.id))
-    res.json(user)
+    try {
+        const user = await userStore.show(Number(req.params.id))
+        if (!user) {
+            res.status(404).send({ message: 'User not found' })
+        } else {
+            res.json(user)
+        }
+    } catch(err) {
+        res.status(500).send({ message: 'Error retrieving user' })
+    }
 }
 
 const authenticate = async(req: Request, res: Response) => {
     try {
-        const user = await userStore.authenticate(req.body.user_name, req.body.user_password) 
-        const token = jwt.sign({user: user}, process.env.TOKEN_SECRET as string)
-        res.json(token)
+        const user = await userStore.authenticate(req.body.username, req.body.user_password)
+        if(!user) {
+            res.status(401).send({ message: 'Authentication failed' })
+        } else {
+            const token = jwt.sign({user: user}, process.env.TOKEN_SECRET as string)
+            res.json(token)
+        }
     } catch(err) {
-        res.status(401)
-        res.json(err)
+        res.status(500).send({ message: 'Error authenticating user', error: err})
     }
 }
 

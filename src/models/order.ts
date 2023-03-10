@@ -23,6 +23,10 @@ export class OrderModel {
     async create(o: Order): Promise<Order> {
         try {
             const conn = await Client.connect()
+            const user = await conn.query('SELECT * FROM users WHERE id = $1', [o.user_id])
+            if (user.rows.length === 0) {
+                throw new Error(`User with id ${o.user_id} does not exist`)
+            }
             const sql = 'INSERT INTO orders (status, user_id) VALUES ($1, $2) RETURNING *'
             const result = await conn.query(sql, [
                 o.status,
