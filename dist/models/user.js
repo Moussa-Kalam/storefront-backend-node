@@ -57,7 +57,7 @@ var UserModel = /** @class */ (function () {
                         return [4 /*yield*/, database_1["default"].connect()];
                     case 1:
                         conn = _a.sent();
-                        sql = 'SELECT id, username, first_name, last_name FROM users';
+                        sql = 'SELECT * FROM users';
                         return [4 /*yield*/, conn.query(sql)];
                     case 2:
                         result = _a.sent();
@@ -81,8 +81,8 @@ var UserModel = /** @class */ (function () {
                         return [4 /*yield*/, database_1["default"].connect()];
                     case 1:
                         conn = _a.sent();
-                        sql = 'INSERT INTO users (username, first_name, last_name, user_password) VALUES ($1, $2, $3, $4) RETURNING username, first_name, last_name';
-                        hash = bcrypt_1["default"].hashSync(u.user_password + pepper, saltRounds);
+                        sql = 'INSERT INTO users (username, first_name, last_name, password_digest) VALUES ($1, $2, $3, $4) RETURNING *';
+                        hash = bcrypt_1["default"].hashSync(u.password + pepper, saltRounds);
                         return [4 /*yield*/, conn.query(sql, [
                                 u.username,
                                 u.first_name,
@@ -95,7 +95,7 @@ var UserModel = /** @class */ (function () {
                         return [2 /*return*/, result.rows[0]];
                     case 3:
                         err_2 = _a.sent();
-                        throw new Error("Could not add new user. Error: ".concat(err_2));
+                        throw new Error("Could not add user ".concat(u.username, ". Error: ").concat(err_2));
                     case 4: return [2 /*return*/];
                 }
             });
@@ -127,25 +127,33 @@ var UserModel = /** @class */ (function () {
     };
     UserModel.prototype.authenticate = function (username, password) {
         return __awaiter(this, void 0, void 0, function () {
-            var conn, sql, result, user;
+            var conn, sql, result, user, err_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, database_1["default"].connect()];
+                    case 0:
+                        _a.trys.push([0, 3, , 4]);
+                        return [4 /*yield*/, database_1["default"].connect()];
                     case 1:
                         conn = _a.sent();
-                        sql = 'SELECT user_password FROM users WHERE username=($1)';
-                        return [4 /*yield*/, conn.query(sql, [username])];
+                        sql = 'SELECT password_digest FROM users WHERE username=($1)';
+                        return [4 /*yield*/, conn.query(sql, [username])
+                            // console.log(password+pepper)
+                        ];
                     case 2:
                         result = _a.sent();
-                        console.log(password + pepper);
+                        // console.log(password+pepper)
                         if (result.rows.length) {
                             user = result.rows[0];
-                            console.log(user);
-                            if (bcrypt_1["default"].compareSync(password + pepper, user.user_password)) {
+                            // console.log(user)
+                            if (bcrypt_1["default"].compareSync(password + pepper, user.password_digest)) {
                                 return [2 /*return*/, user];
                             }
                         }
                         return [2 /*return*/, null];
+                    case 3:
+                        err_4 = _a.sent();
+                        throw new Error("Could not authenticate user ".concat(username, ". Error: ").concat(err_4));
+                    case 4: return [2 /*return*/];
                 }
             });
         });

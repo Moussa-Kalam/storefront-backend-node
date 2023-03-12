@@ -62,7 +62,7 @@ var ProductStore = /** @class */ (function () {
                         return [2 /*return*/, result.rows];
                     case 3:
                         err_1 = _a.sent();
-                        throw new Error("Cannot get products. Error ".concat(err_1));
+                        throw new Error("Could not get products. Error ".concat(err_1));
                     case 4: return [2 /*return*/];
                 }
             });

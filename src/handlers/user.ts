@@ -10,7 +10,7 @@ const index = async(_req: Request, res: Response) => {
         const users = await userStore.index()
         res.json(users)
     } catch(err) {
-        res.status(500).send({ message: 'Error retrieving users' })
+        res.status(400).send({ message: 'Error retrieving users' })
     }
 }
 
@@ -20,7 +20,7 @@ const create = async(req: Request, res: Response) => {
             username: req.body.username,
             first_name: req.body.first_name,
             last_name: req.body.last_name,
-            user_password: req.body.user_password,
+            password: req.body.password,
         }
 
         const newUser = await userStore.create(user)
@@ -40,13 +40,13 @@ const show = async(req: Request, res: Response) => {
             res.json(user)
         }
     } catch(err) {
-        res.status(500).send({ message: 'Error retrieving user' })
+        res.status(400).send({ message: 'Error retrieving user', error: err })
     }
 }
 
 const authenticate = async(req: Request, res: Response) => {
     try {
-        const user = await userStore.authenticate(req.body.username, req.body.user_password)
+        const user = await userStore.authenticate(req.body.username, req.body.password)
         if(!user) {
             res.status(401).send({ message: 'Authentication failed' })
         } else {
@@ -54,7 +54,7 @@ const authenticate = async(req: Request, res: Response) => {
             res.json(token)
         }
     } catch(err) {
-        res.status(500).send({ message: 'Error authenticating user', error: err})
+        res.status(400).send({ message: 'Error authenticating user', error: err})
     }
 }
 
@@ -62,7 +62,7 @@ const authenticate = async(req: Request, res: Response) => {
 const usersRoutes = (app: express.Application) => {
     app.get('/users', verifyAuthToken, index)
     app.get('/users/:id', verifyAuthToken, show)
-    app.post('/users', verifyAuthToken, create)
+    app.post('/users', create)
     app.post('/users/authenticate', authenticate )
 }
 

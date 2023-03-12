@@ -111,15 +111,15 @@ var OrderModel = /** @class */ (function () {
                         return [4 /*yield*/, database_1["default"].connect()];
                     case 1:
                         conn = _a.sent();
-                        sql = 'SELECT * FROM orders WHERE user_id=$1 AND status=$2';
-                        return [4 /*yield*/, conn.query(sql, [userId, "active"])];
+                        sql = 'SELECT * FROM orders WHERE user_id=$1 AND status=\'active\'';
+                        return [4 /*yield*/, conn.query(sql, [userId])];
                     case 2:
                         result = _a.sent();
                         conn.release();
                         return [2 /*return*/, result.rows[0]];
                     case 3:
                         err_3 = _a.sent();
-                        throw new Error("Could not find current order. Error: ".concat(err_3));
+                        throw new Error("Could not find current order of user ".concat(userId, ". Error: ").concat(err_3));
                     case 4: return [2 /*return*/];
                 }
             });
@@ -135,15 +135,15 @@ var OrderModel = /** @class */ (function () {
                         return [4 /*yield*/, database_1["default"].connect()];
                     case 1:
                         conn = _a.sent();
-                        sql = 'SELECT * FROM orders WHERE user_id=$1 AND status=$2';
-                        return [4 /*yield*/, conn.query(sql, [userId, "complete"])];
+                        sql = 'SELECT * FROM orders WHERE user_id=$1 AND status=\'complete\'';
+                        return [4 /*yield*/, conn.query(sql, [userId])];
                     case 2:
                         result = _a.sent();
                         conn.release();
                         return [2 /*return*/, result.rows];
                     case 3:
                         err_4 = _a.sent();
-                        throw new Error("Could not find completed orders. Error: ".concat(err_4));
+                        throw new Error("Could not find completed orders of user ".concat(userId, ". Error: ").concat(err_4));
                     case 4: return [2 /*return*/];
                 }
             });

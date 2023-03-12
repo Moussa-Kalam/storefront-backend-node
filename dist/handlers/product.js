@@ -43,19 +43,26 @@ var verifyAuthToken_1 = __importDefault(require("../middlewares/verifyAuthToken"
 var product_1 = require("../models/product");
 var store = new product_1.ProductStore();
 var index = function (_req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var products;
+    var products, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, store.index()];
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, store.index()];
             case 1:
                 products = _a.sent();
                 res.json(products);
-                return [2 /*return*/];
+                return [3 /*break*/, 3];
+            case 2:
+                err_1 = _a.sent();
+                res.status(400).send({ message: 'Error retrieving products' });
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
     });
 }); };
 var create = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var product, newProduct, err_1;
+    var product, newProduct, err_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -70,23 +77,34 @@ var create = function (req, res) { return __awaiter(void 0, void 0, void 0, func
                 res.json(newProduct);
                 return [3 /*break*/, 3];
             case 2:
-                err_1 = _a.sent();
-                res.status(400);
-                res.json(err_1);
+                err_2 = _a.sent();
+                res.status(400).send({ message: 'Error creating product', error: err_2 });
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];
         }
     });
 }); };
 var show = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var product;
+    var product, err_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, store.show(Number(req.params.id))];
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, store.show(Number(req.params.id))];
             case 1:
                 product = _a.sent();
-                res.json(product);
-                return [2 /*return*/];
+                if (!product) {
+                    res.status(404).send({ message: 'Product not found' });
+                }
+                else {
+                    res.json(product);
+                }
+                return [3 /*break*/, 3];
+            case 2:
+                err_3 = _a.sent();
+                res.status(400).send({ message: 'Error retrieving product' });
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
     });
 }); };

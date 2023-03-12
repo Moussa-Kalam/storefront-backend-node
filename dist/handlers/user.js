@@ -56,7 +56,7 @@ var index = function (_req, res) { return __awaiter(void 0, void 0, void 0, func
                 return [3 /*break*/, 3];
             case 2:
                 err_1 = _a.sent();
-                res.status(500).send({ message: 'Error retrieving users' });
+                res.status(400).send({ message: 'Error retrieving users' });
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];
         }
@@ -72,7 +72,7 @@ var create = function (req, res) { return __awaiter(void 0, void 0, void 0, func
                     username: req.body.username,
                     first_name: req.body.first_name,
                     last_name: req.body.last_name,
-                    user_password: req.body.user_password
+                    password: req.body.password
                 };
                 return [4 /*yield*/, userStore.create(user)];
             case 1:
@@ -106,7 +106,7 @@ var show = function (req, res) { return __awaiter(void 0, void 0, void 0, functi
                 return [3 /*break*/, 3];
             case 2:
                 err_3 = _a.sent();
-                res.status(500).send({ message: 'Error retrieving user' });
+                res.status(400).send({ message: 'Error retrieving user', error: err_3 });
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];
         }
@@ -118,7 +118,7 @@ var authenticate = function (req, res) { return __awaiter(void 0, void 0, void 0
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, userStore.authenticate(req.body.username, req.body.user_password)];
+                return [4 /*yield*/, userStore.authenticate(req.body.username, req.body.password)];
             case 1:
                 user = _a.sent();
                 if (!user) {
@@ -131,7 +131,7 @@ var authenticate = function (req, res) { return __awaiter(void 0, void 0, void 0
                 return [3 /*break*/, 3];
             case 2:
                 err_4 = _a.sent();
-                res.status(500).send({ message: 'Error authenticating user', error: err_4 });
+                res.status(400).send({ message: 'Error authenticating user', error: err_4 });
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];
         }
@@ -140,7 +140,7 @@ var authenticate = function (req, res) { return __awaiter(void 0, void 0, void 0
 var usersRoutes = function (app) {
     app.get('/users', verifyAuthToken_1["default"], index);
     app.get('/users/:id', verifyAuthToken_1["default"], show);
-    app.post('/users', verifyAuthToken_1["default"], create);
+    app.post('/users', create);
     app.post('/users/authenticate', authenticate);
 };
 exports["default"] = usersRoutes;

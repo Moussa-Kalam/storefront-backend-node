@@ -10,6 +10,7 @@ const showCurrent = async(req: Request, res: Response) => {
         const ord = await order.showCurrent(parseInt(req.params.id))
         res.json(ord)
     } catch(err) {
+        res.status(400).send({ message: 'Error retrieving current order.', error: err})
         res.json(err)
     }
 }

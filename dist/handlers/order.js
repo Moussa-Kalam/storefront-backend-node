@@ -55,6 +55,7 @@ var showCurrent = function (req, res) { return __awaiter(void 0, void 0, void 0,
                 return [3 /*break*/, 3];
             case 2:
                 err_1 = _a.sent();
+                res.status(400).send({ message: 'Error retrieving current order.', error: err_1 });
                 res.json(err_1);
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];

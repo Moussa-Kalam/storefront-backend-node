@@ -9,14 +9,14 @@ export type User = {
     username: string;
     first_name: string;
     last_name: string;
-    user_password: string
+    password: string
 }
 
 export class UserModel {
     async index(): Promise<User[]> {
         try {
             const conn = await Client.connect()
-            const sql = 'SELECT id, username, first_name, last_name FROM users'
+            const sql = 'SELECT * FROM users'
             const result = await conn.query(sql)
             conn.release()
             return result.rows
@@ -28,9 +28,9 @@ export class UserModel {
     async create(u: User): Promise<User> {
         try {
             const conn = await Client.connect()
-            const sql = 'INSERT INTO users (username, first_name, last_name, user_password) VALUES ($1, $2, $3, $4) RETURNING username, first_name, last_name'
+            const sql = 'INSERT INTO users (username, first_name, last_name, password_digest) VALUES ($1, $2, $3, $4) RETURNING *'
             
-            const hash = bcrypt.hashSync(u.user_password + pepper, saltRounds);
+            const hash = bcrypt.hashSync(u.password + pepper, saltRounds);
             
             const result = await conn.query(sql, [
                 u.username,
@@ -41,7 +41,7 @@ export class UserModel {
             conn.release()
             return result.rows[0]
         } catch (err) {
-            throw new Error(`Could not add new user. Error: ${err}`)
+            throw new Error(`Could not add user ${u.username}. Error: ${err}`)
         }
     }
 
@@ -58,21 +58,25 @@ export class UserModel {
     }
 
     async authenticate(username: string, password: string): Promise<User | null> {
+        try{
             const conn = await Client.connect()
-            const sql = 'SELECT user_password FROM users WHERE username=($1)'
+            const sql = 'SELECT password_digest FROM users WHERE username=($1)'
 
             const result = await conn.query(sql, [username])
-            console.log(password+pepper)
+            // console.log(password+pepper)
 
             if(result.rows.length) {
                 const user = result.rows[0]
-                console.log(user)
+                // console.log(user)
 
-                if(bcrypt.compareSync(password+pepper, user.user_password)) {
+                if(bcrypt.compareSync(password+pepper, user.password_digest)) {
                     return user
                 }
             }
 
             return null
+        } catch (err) {
+            throw new Error(`Could not authenticate user ${username}. Error: ${err}`)
         }
+    }
 }
