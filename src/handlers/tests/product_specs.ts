@@ -1,14 +1,38 @@
 import supertest from 'supertest'
 import app from '../../server'
+import { Product, ProductStore } from '../../models/product';
+import { User, UserModel } from '../../models/user';
 
 const request = supertest(app);
-describe('Test product endpoints', () => {
+const user = new UserModel()
+const product = new ProductStore()
+
+let userId: number = 0;
+let productId: number = 0;
 let token: string;
 
+describe('Test product endpoints', () => {
+
     beforeAll(async() => {
+        const newUser = {
+            username: 'Gox',
+            first_name: 'Paul',
+            last_name: 'Bool',
+            password: 'pawd'
+        };
+        const user_response: User = await user.create(newUser);
+        userId = user_response.id as number;
+
+        const newProduct = {
+            name: 'Perfume',
+            price: 135.75
+        }
+        const product_response: Product = await product.create(newProduct)
+        productId = product_response.id as number
+
         const response = await request.post('/users/authenticate').send({
-            username: 'dev',
-            password: 'Mypassword'
+            username: 'Gox',
+            password: 'pawd'
         })
         token = response.body;
     })
@@ -19,7 +43,7 @@ let token: string;
     })
 
     it('gets the show endpoint ', async() => {
-        const response = await request.get('/products/1');
+        const response = await request.get(`/products/${productId}`);
         expect(response.status).toBe(200);
     })
 
@@ -28,9 +52,9 @@ let token: string;
             .post('/products')
             .set('Authorization', `Bearer ${token}`)
             .send({
-            "name": "Watch",
-            "price": 50.00
-        });
+                name: 'Perfume',
+                price: 135.75
+            });
         expect(response.status).toBe(200);
     })
 })

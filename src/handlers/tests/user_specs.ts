@@ -1,15 +1,22 @@
 import supertest from 'supertest'
 import app from '../../server'
+import { User, UserModel } from '../../models/user';
 
 const request = supertest(app);
 
 describe('Test users endpoints', () => {
     let token: string;
+    const newUser : User= {
+        username: 'Gox',
+        first_name: 'Paul',
+        last_name: 'Bool',
+        password: 'pawd'
+    };
 
     beforeAll(async() => {
         const response = await request.post('/users/authenticate').send({
-            username: 'dev',
-            password: 'Mypassword'
+            username: 'Gox',
+            password: 'pawd'
         })
         token = response.body;
     })
@@ -29,12 +36,7 @@ describe('Test users endpoints', () => {
     })
 
     it('gets the create endpoint ', async() => {
-        const response = await request.post('/users').send({
-            username: 'dev', 
-            first_name: 'Moussa',
-            last_name: 'AMZAT',
-            password: 'Mypassword'
-        });
+        const response = await request.post('/users').send(newUser)
         expect(response.status).toBe(200); 
     })
 

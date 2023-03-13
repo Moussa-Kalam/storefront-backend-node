@@ -73,4 +73,5 @@ CREATE TABLE orders_products (
     product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
     quantity INTEGER NOT NULL
 );
+
 ```

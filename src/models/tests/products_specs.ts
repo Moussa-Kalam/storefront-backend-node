@@ -18,8 +18,8 @@ describe('Product Store', () => {
 
     it('create method should add a product', async() => {
         const p = {
-            name: 'Watch',
-            price: 50.00,
+            name: 'Perfume',
+            price: 135.75,
         }
         const result = await productStore.create(p);
         expect(result.name).toBe(p.name);
@@ -28,14 +28,14 @@ describe('Product Store', () => {
 
     it('index method should return a list of products', async() => {
         const result = await productStore.index();
-        expect(result[0].name).toBe('Watch');
+        expect(result[0].name).toBe('Perfume');
     });
 
     it('show method should return the correct product', async() => {
         const productList = await productStore.index()
         const productId = productList[0].id
         const result = await productStore.show(productId as number);
-        expect(result.name).toBe('Watch')
+        expect(result.name).toBe('Perfume')
     })
     
 });

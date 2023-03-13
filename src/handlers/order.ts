@@ -1,8 +1,10 @@
 import express, { Request, Response } from 'express'
 import verifyAuthToken from '../middlewares/verifyAuthToken'
 import { Order, OrderModel } from '../models/order'
+import { ProductStore } from '../models/product'
 
 const order = new OrderModel()
+const product = new ProductStore()
 
 const create = async(req: Request, res: Response) => {
     try {
@@ -26,6 +28,10 @@ const addProductToOrder = async (req: Request, res: Response) => {
             order_id: orderId,
             product_id: productId,
             quantity: quantity,
+        }
+        const existingProduct = await product.show(productId);
+        if(!existingProduct) {
+            res.status(404).send({ message: 'Product not found' })
         }
         const result = await order.addProductToOrder(ordPro)
         res.json(result)
