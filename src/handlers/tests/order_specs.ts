@@ -14,7 +14,28 @@ describe('Test orders endpoint', () => {
         token = response.body;
     })
 
-    it('gets the current order endpoint ', async() => {
+    it('gets the create order endpoint', async() => {
+        const response = await request
+            .post('/orders')
+            .set('Authorization', `Bearer ${token}`)
+            .send({
+                status: 'active',
+                user_id: 1
+            });
+            expect(response.status).toBe(200);
+    })
+
+    it('gets the addProductToOrder endpoint', async() => {
+        const response = await request 
+            .post('/orders/1/products/1')
+            .set('Authorization', `Bearer ${token}`)
+            .send({
+                product_id: 1,
+                quantity: 1
+            });
+            expect(response.status).toBe(200);
+    })
+    it('gets the current order endpoint', async() => {
         const response = await request
             .get('/current-order/1')
             .set('Authorization', `Bearer ${token}`);

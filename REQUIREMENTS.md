@@ -30,7 +30,7 @@ These are the notes from a meeting with the frontend developer that describe wha
 ```
 CREATE TABLE IF NOT EXISTS products (
     id SERIAL PRIMARY KEY,
-    name TEXT NOT NULL,
+    name VARCHAR(100) NOT NULL,
     price DECIMAL(10,2) NOT NULL
 );
 ```
@@ -44,10 +44,10 @@ CREATE TABLE IF NOT EXISTS products (
 ```
 CREATE TABLE IF NOT EXISTS users(
     id SERIAL PRIMARY KEY,
-    user_name TEXT NOT NULL UNIQUE,
-    first_name TEXT NOT NULL,
-    last_name TEXT NOT NULL,
-    user_password TEXT NOT NULL
+    username VARCHAR(50) NOT NULL,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    password_digest VARCHAR(255) NOT NULL
 );
 ```
 
@@ -61,8 +61,16 @@ CREATE TABLE IF NOT EXISTS users(
 ```
 CREATE TABLE IF NOT EXISTS orders (
     id SERIAL PRIMARY KEY,
-    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    status VARCHAR(10) NOT NULL
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    status VARCHAR(10) NOT NULL DEFAULT 'active',
+    CHECK (status IN ('active', 'complete'))
 );
 ```
-
+```
+CREATE TABLE orders_products (
+    id SERIAL PRIMARY KEY, 
+    order_id INTEGER NOT NULL REFERENCES orders(id) ON DELETE CASCADE, 
+    product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+    quantity INTEGER NOT NULL
+);
+```
