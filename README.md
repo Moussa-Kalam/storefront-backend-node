@@ -9,7 +9,7 @@ git clone https://github.com/Moussa-Kalam/storefront-backend-node.git
 
 2. Run `yarn` to install the required dependencies.
 
-3. Rename the `example.env` file to `.env` and replace the values in angle brackets with your own values.
+3. Rename the `.env.example` file to `.env` and replace the values in angle brackets with your own values.
 
 4. Ensure that you have either `docker` installed on your machine or a local instance of `PostgreSQL` installed.
 
@@ -17,6 +17,10 @@ git clone https://github.com/Moussa-Kalam/storefront-backend-node.git
 ```
 docker-compose up
 ```
+ You can then proceed to login using 
+ ```
+ psql -U storefront_user storefront_db
+ ```
 
 6. If you're using a local instance of `PostgreSQL`, first check if the service is running either from the services window or by running the following command for Linux systems:
 ```
@@ -56,17 +60,24 @@ Your application must make use of the following libraries:
 
 ### Products
 
-| Method | Endpoint | Description |
-| --- | --- | --- |
-| GET | /api/products | Retrieve a list of products |
-| POST | /api/products | Create a new product |
-| GET | /api/products/1 | Retrieve a specific product |
+| Method | Endpoint | Description | Authentication |
+| --- | --- | --- | --- |
+| GET | /products | Retrieve a list of products | ❌ |
+| POST | /products | Create a new product | ✔️
+| GET | /products/1 | Retrieve a specific product | ❌ |
 
 ### Users 
 
-| Method | Endpoint | Description |
-| --- | --- | --- |
-| GET | /api/users | Retrieve a list of users |
-| POST | /api/users | Register a user |
-| GET | /api/users/1 | Retrieve a specific user |
+| Method | Endpoint | Description | Authentication |
+| --- | --- | --- | --- |
+| GET | /users | Retrieve a list of users | ✔️ |
+| POST | /users | Register a user | ❌ |
+| GET | /users/1 | Retrieve a specific user | ✔️ |
+
+### Orders
+
+| Method | Endpoint | Description | Authentication |
+| --- | --- | --- | --- |
+| GET | /current-order/1 | Retrieve current order by specific user | ✔️ |
+
 

@@ -38,11 +38,4 @@ describe('Test users endpoints', () => {
         expect(response.status).toBe(200); 
     })
 
-    // it('gets the authentication endpoint ', async() => {
-    //     const response = await request.post('/users/authenticate').send({
-    //         username: 'dev',
-    //         password: 'Mypassword'
-    //     });
-    //     expect(response.status).toBe(200);
-    // })
 })
